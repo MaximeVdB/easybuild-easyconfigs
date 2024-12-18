@@ -1,0 +1,12 @@
+# To ensure linking to FlexiBLAS instead of OpenBLAS
+--- install/configure.orig      2024-12-16 09:28:26.000000000 +0100
++++ install/configure   2024-12-16 09:28:34.000000000 +0100
+@@ -6421,7 +6421,7 @@
+       call dgemm
+       end
+ _ACEOF
+-for ac_lib in '' blas-3 openblas blas
++for ac_lib in '' blas-3 flexiblas blas
+ do
+   if test -z "$ac_lib"; then
+     ac_res="none required"

@@ -1,0 +1,43 @@
+easyblock = 'ConfigureMake'
+
+name = 'Environ'
+version = '3.1'
+
+homepage = 'https://environ.readthedocs.io'
+description = """Environ is a computational library aimed at introducing
+environment effects to atomistic first-principles simulations,
+in particular for applications in surface science and materials design.
+It is a Quantum-ESPRESSO module currently compatible with QE-6.3 and up.
+"""
+
+toolchain = {'name': 'foss', 'version': '2023a'}
+toolchainopts = {'extra_f90flags': '-cpp -fallow-argument-mismatch'}
+
+github_account = 'environ-developers'
+source_urls = [GITHUB_SOURCE]
+sources = ['v%(version)s.tar.gz']
+patches = ['Environ-3.1_flexiblas_config.patch']
+checksums = [
+    {'v%(version)s.tar.gz': 'd03cc1f3454c166cd6781e24b03958fb7633d6235995ebecae0c04d37c2e7a8d'},
+    {'Environ-3.1_flexiblas_config.patch': '380d09c343de50dba50a2f019a7bdce21d508c39efa02904988f511418204c84'},
+]
+
+parallel = False
+build_cmd_targets = 'compile'
+
+install_cmd = ' && '.join([
+    'mkdir -p %(installdir)s/bin %(installdir)s/include %(installdir)s/lib',
+    'cp %(builddir)s/%(name)s-%(version)s/programs/driver %(installdir)s/bin/',
+    'cp %(builddir)s/%(name)s-%(version)s/src/*.mod %(installdir)s/include/',
+    'cp %(builddir)s/%(name)s-%(version)s/libs/lib*.a %(installdir)s/lib/',
+])
+
+sanity_check_paths = {
+    'files': ['bin/driver', 'include/environ_api.mod',
+              'lib/libenvfft.a', 'lib/libenvsrc.a', 'lib/libenvutil.a'],
+    'dirs': ['bin', 'include', 'lib'],
+}
+
+sanity_check_commands = ['mpirun -np 1 bin/driver -n tester']
+
+moduleclass = 'chem'
